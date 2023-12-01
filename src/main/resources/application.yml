@@ -1,0 +1,93 @@
+spring:
+  application:
+    name: api-freeman
+  jackson:
+    mapper:
+      default-view-inclusion: true
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: "off"
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            provider: google
+            client-id: 781638654614-r14ahgl74i4oi796juffi2js0jr5qet3.apps.googleusercontent.com
+            client-secret: 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
+            scope: openid, https://www.googleapis.com/auth/userinfo.profile, https://www.googleapis.com/auth/userinfo.email
+            client-name: Sign in with Google
+          github:
+            provider: github
+            client-id: a0466f5f1099f222caff
+            client-secret: 8d2c1d8444e8314a8433d7d3158d9cd82e6172e3
+            scope: user:email, read:user
+            client-name: Sign in with GitHub
+        provider:
+          google:
+            user-name-attribute: email
+          github:
+            user-name-attribute: login
+  data:
+    mongodb:
+      uri: mongodb://root:brutal@192.168.18.4:27017/freeman?authSource=admin
+
+server:
+  servlet:
+    context-path: /freeman
+
+freeman:
+  security:
+    jwt:
+      secret: t6w9z$C&F)J@NcRfUjXn2r5u8x!A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQeThWm
+      expirationTime: 30
+    oauth2:
+      redirectUri: http://localhost:3000/oauth2/redirect
+    cors:
+      allowed-origins: http://localhost:3000
+    default-password: 162364
+
+
+logging:
+  level:
+    root: INFO
+    com.erocha.freeman: INFO
+    org.springframework:
+      boot.context: INFO
+
+springdoc:
+  packages-to-scan: "com.erocha.freeman"
+  swagger-ui:
+    path: /swagger-ui:html
+
+---
+spring:
+  config:
+    activate:
+      on-profile: develop
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://root:brutal@localhost:27017/freeman?authSource=admin}
+#      uri: ${MONGO_URI:mongodb+srv://freeman_run:brutal@cluster0.lt1qf.gcp.mongodb.net/freeman?retryWrites=true&w=majority}
+
+logging:
+  level:
+    root: INFO
+    web: DEBUG
+    com.erocha.freeman: INFO
+    org.springframework:
+      boot.context: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  data:
+    mongodb:
+#      uri: ${MONGO_URI:mongodb+srv://freeman_run:brutal@cluster0.lt1qf.gcp.mongodb.net/freeman?retryWrites=true&w=majority}
+      uri: ${MONGO_URI:mongodb://root:brutal@192.168.1.9:27017/freeman?authSource=admin}
+
+server:
+  port: 8080

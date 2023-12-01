@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  mongo:
+    hostname: mongo_database
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: brutal
+      MONGODB_USERNAME: freeman
+      MONGODB_PASSWORD: brutal
+      MONGODB_DATABASE: freeman
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/var/micro-data/mongodb/data/db
+    networks:
+      - freeman-network
+
+  app:
+    image: api-freeman
+    environment:
+      SPRING_PROFILES_ACTIVE: develop
+      MONGO_URI: mongodb://root:brutal@mongo_database:27017/freeman?authSource=admin
+    ports:
+      - "8080:8080"
+    networks:
+      - freeman-network
+
+  web:
+    image: freeman-web
+    ports:
+      - "80:80"
+    networks:
+      - freeman-network
+
+networks:
+  freeman-network:
+    driver: bridge

@@ -1,0 +1,1 @@
+{"_id":{"$oid":"656a088d42c7860123186637"},"name":"Protheus","code":"PTH","manager":{"_id":{"$oid":"656a075542c7860123186632"},"name":"Sara Bianca"},"owner":{"_id":{"$oid":"656a081f42c7860123186636"},"name":"Padoca do Renan"},"phases":["Architecture","Development","Tests"],"active":false,"_class":"com.erocha.freeman.management.domains.Project"}

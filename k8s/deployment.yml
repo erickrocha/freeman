@@ -1,0 +1,58 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: api-freeman
+  labels:
+    name: api-freeman
+    type: api
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: api-freeman
+    spec:
+      imagePullSecrets:
+        - name: freemanregistry
+      containers:
+        - name: api-freeman
+          image: docker.io/library/rochatec/freeman/api-freeman
+          imagePullPolicy: "Always"
+          env:
+            - name: JAVA_OPTIONS
+              value: -Dspring.profiles.active=develop -Xmx1g -Xms195m
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 300m
+              memory: 195Mi
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9090
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9090
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          ports:
+            - containerPort: 80
+              name: app
+              protocol: TCP
+            - containerPort: 9090
+              name: monitoring
+              protocol: TCP
